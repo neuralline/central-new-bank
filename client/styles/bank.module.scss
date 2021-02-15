@@ -1,0 +1,47 @@
+@import './variables';
+
+.Card {
+  display: grid;
+  gap: 0.6rem;
+  align-items: center;
+  padding: $padding;
+  border: 1px solid $teal;
+  border-radius: $radius;
+  margin-bottom: $padding;
+  max-width: 327px;
+  min-height: 208px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $padding;
+  max-width: 512px;
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  section {
+    border: 1px solid $green;
+    padding: $padding;
+    border-radius: $radius;
+    display: grid;
+    gap: 1rem;
+  }
+  i {
+    color: $red;
+  }
+  @media only screen and (max-height: 920px) {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+.Form {
+  display: grid;
+  gap: 1rem;
+  justify-content: start;
+}
