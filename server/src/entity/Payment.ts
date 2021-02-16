@@ -19,10 +19,10 @@ export class Payment extends MainEntity {
   @PrimaryGeneratedColumn('uuid')
   payment_id: string
 
-  @Column({type: 'double'})
+  @Column({type: 'numeric', precision: 7, scale: 2, default: 0.0})
   amount: number
 
-  @Column({type: 'double', default: 0.0})
+  @Column({type: 'numeric', precision: 7, scale: 2, default: 0.0})
   amount_paid: number
 
   @ManyToOne(() => Account, account => account.account_id, {eager: true})

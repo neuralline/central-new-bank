@@ -4,13 +4,17 @@ import styles from '../styles/app.module.scss'
 import Nav from './Nav'
 
 const Layout: FC = ({ children }) => {
-  const { profile } = useContext(StoreContext)
+  const { authenticated, profile } = useContext(StoreContext)
   return (
     <div className={styles.container}>
       <Nav />
       <>
         <h2>
-          <i>Greetings</i> {profile.name}
+          {authenticated && (
+            <>
+              <i>Greetings</i> {profile.name}
+            </>
+          )}
         </h2>
       </>
       <main className={styles.main}>{children}</main>

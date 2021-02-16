@@ -21,7 +21,7 @@ export class Account extends MainEntity {
   @PrimaryGeneratedColumn('uuid')
   account_id: string
 
-  @Column('double')
+  @Column({type: 'numeric', precision: 7, scale: 2, default: 0.0})
   balance: number
 
   @Column()

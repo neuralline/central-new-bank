@@ -1,13 +1,12 @@
 version: '3.1'
 services:
-  mysql:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+  postgresBank:
+    image: postgres
+    container_name: pg-docker
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: central
-      MYSQL_USER: accountant
-      MYSQL_PASSWORD: development
-      MYSQL_DATABASE: bank
+      POSTGRES_USER: accountant
+      POSTGRES_PASSWORD: development
+      POSTGRES_DB: bank
     ports:
-      - 127.0.0.1:3306:3306
+      - '5432:5432'

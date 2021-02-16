@@ -26,8 +26,8 @@ const Register: FC<{ redirectTo?: string }> = ({ redirectTo = '/profile' }) => {
         name: fullName
       })
       console.log('registered ', res)
-      setProfile({ type: 'LOGIN', data: res.data })
-      router.push('./profile')
+      //setProfile({ type: 'LOGIN', data: res.data })
+      router.push('./login')
     } catch (err) {
       setError('Bank could not connect to server')
       setErrors(err.response.data)
