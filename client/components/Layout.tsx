@@ -1,0 +1,21 @@
+import { FC, useContext } from 'react'
+import { StoreContext } from '../context/auth'
+import styles from '../styles/app.module.scss'
+import Nav from './Nav'
+
+const Layout: FC = ({ children }) => {
+  const { profile } = useContext(StoreContext)
+  return (
+    <div className={styles.container}>
+      <Nav />
+      <>
+        <h2>
+          <i>Greetings</i> {profile.name}
+        </h2>
+      </>
+      <main className={styles.main}>{children}</main>
+    </div>
+  )
+}
+
+export default Layout

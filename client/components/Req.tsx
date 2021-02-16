@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { Account, Payment } from '../custom'
 import bankCSS from '../styles/bank.module.scss'
 
 const Req: FC<{ payments: Payment[] }> = ({ payments }) => {

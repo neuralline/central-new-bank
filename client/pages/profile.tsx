@@ -1,48 +1,31 @@
-import axios from 'axios'
 import Head from 'next/head'
-import { useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useContext, useEffect } from 'react'
 import Acc from '../components/Acc'
-import Login from '../components/login'
-import Nav from '../components/Nav'
 import Pay from '../components/Pay'
 import Req from '../components/Req'
-import { StoreContext } from '../context/provider'
-import { Profile, User } from '../custom'
+import { StoreContext } from '../context/auth'
 import bankCSS from '../styles/bank.module.scss'
 
-export interface Icon {
-  profile: Profile
-}
 export default function Users() {
-  const { profile, setProfile } = useContext(StoreContext)
-  const [userEmail, setEmail] = useState<string>('')
+  const router = useRouter()
+  const { profile } = useContext(StoreContext)
 
   useEffect(() => {
-    if (profile.email) {
-      setEmail(profile.email)
+    if (!profile.email) {
+      router.push('/login')
     }
-
-    userEmail !== '' &&
-      axios
-        .get(`http://localhost:5000/users/${userEmail}`)
-        .then(res => setProfile(res.data))
-        .catch(err => console.log(err))
-  }, [userEmail])
+  }, [])
 
   return (
-    <div className="container">
+    <>
       <Head>
         <title>{profile.name} - Central New Bank</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Nav />
-      <main>
+      <section>
         {profile.email ? (
           <>
-            <h2>
-              <i>Greetings</i> {profile.name}
-            </h2>
             <div key={profile.user_id} className={bankCSS.Card}>
               <div>accounts: {profile.accounts.length}</div>
               <div>Payments: {profile.sender.length}</div>
@@ -58,10 +41,10 @@ export default function Users() {
           </>
         ) : (
           <>
-            <Login setEmail={setEmail} />
+            <h1>Error: you should not see this</h1>
           </>
         )}
-      </main>
-    </div>
+      </section>
+    </>
   )
 }

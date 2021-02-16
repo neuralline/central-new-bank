@@ -3,8 +3,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import Nav from '../../components/Nav'
-import { StoreContext } from '../../context/provider'
+import { server } from '../../config/config'
+import { StoreContext } from '../../context/auth'
 import bankCSS from '../../styles/bank.module.scss'
 
 export default function BankPayment() {
@@ -24,7 +24,7 @@ export default function BankPayment() {
       return setError('allowed amount is £0.1 to £30,000')
 
     try {
-      const res = await axios.patch(`http://localhost:5000/payments/${id}`, {
+      const res = await axios.patch(`${server}/payments/${id}`, {
         amount,
         account_id
       })
@@ -40,13 +40,13 @@ export default function BankPayment() {
 
   useEffect(() => {}, [])
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Accounts - Central New Bank</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Nav />
-      <main>
+
+      <section>
         {profile.email ? (
           <>
             <h1>{error}</h1>
@@ -95,7 +95,7 @@ export default function BankPayment() {
             </Link>
           </div>
         )}
-      </main>
-    </div>
+      </section>
+    </>
   )
 }

@@ -15,9 +15,9 @@ usersRouter.get('/', async (_: Request, res: Response) => {
 })
 
 usersRouter.post('/', async (req: Request, res: Response) => {
-  const {name, email} = req.body
+  const {name, email, password} = req.body
   try {
-    const user = User.create({name, email})
+    const user = User.create({name, email, password})
     const errors = await validate(user)
     if (errors.length > 0) throw errors
 

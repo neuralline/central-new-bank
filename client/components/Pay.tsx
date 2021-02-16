@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import React, { FC } from 'react'
-import { Account, Payment } from '../custom'
 import bankCSS from '../styles/bank.module.scss'
 
 const Pay: FC<{ payments: Payment[] }> = ({ payments }) => {
@@ -24,7 +23,7 @@ const Pay: FC<{ payments: Payment[] }> = ({ payments }) => {
                 <div className="focus">
                   <i>pending</i>
                 </div>
-                <Link href={`/payment/${pay.payment_id}`}>
+                <Link shallow href={`/payment/${pay.payment_id}`}>
                   <button>pay now</button>
                 </Link>
               </>

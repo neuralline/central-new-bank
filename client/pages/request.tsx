@@ -3,9 +3,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useContext, useEffect, useState } from 'react'
 import Nav from '../components/Nav'
-import { StoreContext } from '../context/provider'
+import { StoreContext } from '../context/auth'
 import bankCSS from '../styles/bank.module.scss'
 import { useRouter } from 'next/router'
+import { server } from '../config/config'
+import Input from '../components/forms/Input'
 
 export default function Requests() {
   const { profile } = useContext(StoreContext)
@@ -19,10 +21,10 @@ export default function Requests() {
     e.preventDefault()
     setError('')
     try {
-      const res = await axios.post('http://localhost:5000/payments', {
+      await axios.post(`${server}/payments`, {
         amount,
         account,
-         sender,
+        sender,
         receiver: profile.user_id
       })
       setAmount(0)
@@ -30,33 +32,30 @@ export default function Requests() {
       setSender('')
       router.push('/profile')
     } catch (err) {
-      setError('The bank encountered error processing your payment')
-      console.log(err)
+      setError(err.response.data.error.message)
+      console.log(err.response.data.error.message)
     }
   }
 
   useEffect(() => {}, [])
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Accounts - Central New Bank</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Nav />
-      <main>
+
+      <section>
         {profile.email ? (
           <>
-            <h1>{error}</h1>
-            <h2>Request payment</h2>
+            <h1>Request payment</h1>
+            <h2 className="error">{error}</h2>
 
             <form className={bankCSS.Form} onSubmit={handleRequest}>
-              Please provide payer's email address
-              <input
-                type="email"
-                onChange={e => setSender(e.target.value || '')}
-                value={sender}
-              />
-              Please provide the amount of money you are requesting
+              <small>Please provide payer's email address</small>
+              <Input type="email" setValue={setSender} value={sender} />
+              <small>
+                Please provide the amount of money you are requesting
+              </small>
               <input
                 type="text"
                 onChange={e => setAmount(parseInt(e.target.value) || 0)}
@@ -75,7 +74,7 @@ export default function Requests() {
                   ))}
                 </select>
               ) : (
-                <div>you don't have account </div>
+                <div className="error">You don't have bank account! </div>
               )}
               <button type="submit" onSubmit={handleRequest}>
                 Request
@@ -89,7 +88,7 @@ export default function Requests() {
             </Link>
           </div>
         )}
-      </main>
-    </div>
+      </section>
+    </>
   )
 }

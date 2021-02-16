@@ -8,10 +8,16 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import MainEntity from './MainEntity'
 import {User} from './User'
 
 @Entity('bank_accounts')
-export class Account extends BaseEntity {
+export class Account extends MainEntity {
+  constructor(sub: Partial<Account>) {
+    super()
+    Object.assign(this, sub)
+  }
+
   @PrimaryGeneratedColumn('uuid')
   account_id: string
 
@@ -30,10 +36,4 @@ export class Account extends BaseEntity {
   @ManyToOne(() => User, user => user.accounts, {eager: true})
   @JoinColumn({name: 'user_id'})
   user: User
-
-  @CreateDateColumn()
-  created_on: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
 }

@@ -1,8 +1,7 @@
 import axios from 'axios'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import Nav from '../components/Nav'
-import { User } from '../custom'
+import { server } from '../config/config'
 import bankCss from '../styles/bank.module.scss'
 
 export default function Users() {
@@ -10,20 +9,18 @@ export default function Users() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/users')
+      .get(`${server}/users`)
       .then(res => setUsers(res.data))
       .then(res => console.log(res))
       .catch(err => console.log(err))
   }, [])
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Users - Central New Bank</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Nav />
-      <main>
+      <section>
         <h2>CNB Users</h2>
 
         {users.length ? (
@@ -37,7 +34,7 @@ export default function Users() {
         ) : (
           <div>loading</div>
         )}
-      </main>
-    </div>
+      </section>
+    </>
   )
 }

@@ -1,10 +1,13 @@
 import '../styles/app.scss'
-import { StoreProvider } from '../context/provider'
+import { StoreProvider } from '../context/auth'
+import Layout from '../components/Layout'
 
 function MyApp({ Component, pageProps }) {
   return (
     <StoreProvider>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </StoreProvider>
   )
 }

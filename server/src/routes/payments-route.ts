@@ -10,11 +10,7 @@ paymentsRoute.get('/', async (req: Request, res: Response) => {
   const {active, sender, receiver} = req.body
 
   try {
-    const payments = await Payment.find({
-      active,
-      sender,
-      receiver
-    })
+    const payments = await Payment.find({active, sender, receiver})
     return res.json(payments)
   } catch (err) {
     console.log(err)
@@ -63,7 +59,7 @@ paymentsRoute.patch('/:uuid', async (req: Request, res: Response) => {
   console.log({amount, account_id})
   try {
     if (amount < 0.5 || 30000 < amount) {
-      throw {message: 'please provide valid amount of money', error: true}
+      throw {message: 'please provide a valid amount of money', error: true}
     }
 
     const account = await Account.findOneOrFail({account_id})

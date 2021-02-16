@@ -1,18 +1,21 @@
 import {
-  BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import {Account} from './Account'
+import MainEntity from './MainEntity'
 import {User} from './User'
 
 @Entity('payment_requests')
-export class Payment extends BaseEntity {
+export class Payment extends MainEntity {
+  constructor(sub: Partial<Payment>) {
+    super()
+    Object.assign(this, sub)
+  }
+
   @PrimaryGeneratedColumn('uuid')
   payment_id: string
 
@@ -34,10 +37,4 @@ export class Payment extends BaseEntity {
 
   @Column({type: 'int', default: 0})
   active: number
-
-  @CreateDateColumn()
-  created_on: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
 }

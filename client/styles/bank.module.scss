@@ -19,6 +19,47 @@
   padding: $padding;
   max-width: 512px;
 }
+.Form {
+  display: grid;
+  gap: 0.6rem;
+  justify-content: start;
+  width: 100%;
+  button,
+  input,
+  select {
+    text-align: left;
+    color: $dark;
+    min-width: 220px;
+    border-radius: $radius;
+    height: auto;
+    cursor: pointer;
+    padding: 1rem;
+    transition: var(--transition);
+    user-select: text;
+    font-weight: 100;
+    transition: all ease-in-out 0.2s;
+    box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
+  }
+  select {
+    min-width: 20px;
+  }
+  input {
+    background-color: rgba($white, $alpha: 0.5);
+    color: $dark;
+  }
+  input:focus {
+    background-color: rgba($white, $alpha: 0.8);
+  }
+
+  button {
+    background-color: rgba($green, $alpha: 0.8);
+    text-align: center;
+    font-weight: 400;
+  }
+  button:hover {
+    background-color: rgba($green, $alpha: 1);
+  }
+}
 
 .Grid {
   display: grid;
@@ -38,10 +79,4 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-}
-
-.Form {
-  display: grid;
-  gap: 1rem;
-  justify-content: start;
 }

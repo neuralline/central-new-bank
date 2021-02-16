@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { Account } from '../custom'
 import bankCSS from '../styles/bank.module.scss'
 
 const Acc: FC<{ accounts: Account[] }> = ({ accounts }) => {

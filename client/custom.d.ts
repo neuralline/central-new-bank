@@ -1,4 +1,4 @@
-export interface Account {
+interface Account {
   account_id: string
   balance: number
   name: string
@@ -7,7 +7,7 @@ export interface Account {
   user: User
 }
 
-export interface User {
+interface User {
   user_id: string
   name: string
   email: string
@@ -16,7 +16,7 @@ export interface User {
   receiver: Payment[]
 }
 
-export interface Payment {
+interface Payment {
   payment_id: string
   amount: number
   amount_paid: number
@@ -26,6 +26,32 @@ export interface Payment {
   active: number
 }
 
-export interface Profile extends User {
+interface State {
+  authenticated: boolean
+  profile: User
+  loading: boolean
+}
+
+interface Action {
+  type: string
+  data: any
+}
+
+interface ContextInterface extends State {
+  state?: State
+  setProfile?: (item: Action) => void
+}
+
+interface InputInterface {
+  value: string
+  className?: string
+  type?: 'email' | 'password' | 'text' | 'username'
+  placeholder?: string
+  error?: string
+  required?: boolean
+  setValue: (str: string) => void
+}
+
+interface Profile extends User {
   isLoggedIn: boolean
 }

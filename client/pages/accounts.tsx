@@ -2,9 +2,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import Acc from '../components/Acc'
-import Nav from '../components/Nav'
-import { Account } from '../custom'
-import bankCSS from '../styles/bank.module.scss'
+import { server } from '../config/config'
 
 export default function Accounts() {
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -12,22 +10,21 @@ export default function Accounts() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/accounts')
+      .get(`${server}/accounts`)
       .then(res => setAccounts(res.data))
       .then(res => console.log(res))
       .catch(err => console.log(err))
   }, [])
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Accounts - Central New Bank</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Nav />
-      <main className="">
+
+      <section>
         <h2>CNB users bank Accounts</h2>
         <Acc accounts={accounts} />
-      </main>
-    </div>
+      </section>
+    </>
   )
 }
