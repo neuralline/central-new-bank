@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react'
-import { StoreContext } from '../context/auth'
+import { StoreContext } from '../context/isAuth'
 import styles from '../styles/app.module.scss'
 import Nav from './Nav'
 

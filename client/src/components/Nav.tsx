@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React, { useContext } from 'react'
-import { StoreContext } from '../context/auth'
+import { StoreContext } from '../context/isAuth'
 import bankCSS from '../styles/bank.module.scss'
 
 const Nav = () => {

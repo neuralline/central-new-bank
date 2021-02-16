@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import accountsRouter from './accounts-route'
-import authRoutes from './auth'
+import authRoutes from './auth/auth-route'
 import paymentsRoute from './payments-route'
 import usersRouter from './users-route'
 

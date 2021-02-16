@@ -1,4 +1,6 @@
-import { createContext, FC, useReducer } from 'react'
+import axios from 'axios'
+import { createContext, FC, useEffect, useReducer } from 'react'
+import { server } from '../config/config'
 
 const initialUser: User = {
   user_id: '',
@@ -35,6 +37,20 @@ export const StoreContext = createContext<ContextInterface>(undefined)
 
 export const StoreProvider: FC = ({ children }) => {
   const [state, setProfile] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    axios.defaults.withCredentials = true
+    const loadUser = async () => {
+      try {
+        const res = await axios.post(`${server}/me`)
+        if (!res.data) throw Error
+        setProfile({ type: 'LOGIN', data: res.data })
+      } catch (err) {
+        console.log('provider context', err.response.data)
+      }
+    }
+    loadUser()
+  }, [])
 
   return (
     <StoreContext.Provider value={{ ...state, setProfile }}>

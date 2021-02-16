@@ -4,7 +4,7 @@ import { useContext, useEffect } from 'react'
 import Acc from '../components/Acc'
 import Pay from '../components/Pay'
 import Req from '../components/Req'
-import { StoreContext } from '../context/auth'
+import { StoreContext } from '../context/isAuth'
 import bankCSS from '../styles/bank.module.scss'
 
 export default function Users() {

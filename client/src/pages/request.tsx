@@ -1,40 +1,39 @@
 import axios from 'axios'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { server } from '../../config/config'
-import { StoreContext } from '../../context/auth'
-import bankCSS from '../../styles/bank.module.scss'
+import Nav from '../components/Nav'
+import { StoreContext } from '../context/isAuth'
+import bankCSS from '../styles/bank.module.scss'
+import { useRouter } from 'next/router'
+import { server } from '../config/config'
+import Input from '../components/forms/Input'
 
-export default function BankPayment() {
-  const router = useRouter()
-  const { id } = router.query
+export default function Requests() {
   const { profile } = useContext(StoreContext)
+  const router = useRouter()
   const [amount, setAmount] = useState<number>(0)
-  const [account_id, setAccount_id] = useState<string>('')
+  const [account, setAccount] = useState<string>('')
+  const [sender, setSender] = useState<string>('robinhood@banker.com')
   const [error, setError] = useState<string>('')
 
   const handleRequest = async e => {
     e.preventDefault()
     setError('')
-
-    if (!account_id) return setError('please select account')
-    if (amount < 0.1 || amount > 30000)
-      return setError('allowed amount is £0.1 to £30,000')
-
     try {
-      const res = await axios.patch(`${server}/payments/${id}`, {
+      await axios.post(`${server}/payments`, {
         amount,
-        account_id
+        account,
+        sender,
+        receiver: profile.user_id
       })
-      console.log('request res.data', res.data)
       setAmount(0)
-      setAccount_id('')
+      setAccount('')
+      setSender('')
       router.push('/profile')
     } catch (err) {
-      setError('The bank encountered error processing your payment')
-      console.log(err)
+      setError(err.response.data.error.message)
+      console.log(err.response.data.error.message)
     }
   }
 
@@ -43,31 +42,29 @@ export default function BankPayment() {
     <>
       <Head>
         <title>Accounts - Central New Bank</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <section>
         {profile.email ? (
           <>
-            <h1>{error}</h1>
-            <h2>Pay or we will take it</h2>
+            <h1>Request payment</h1>
+            <h2 className="error">{error}</h2>
 
             <form className={bankCSS.Form} onSubmit={handleRequest}>
-              <label className="small">
-                Please select the amount you want to pay
-              </label>
+              <small>Please provide payer's email address</small>
+              <Input type="email" setValue={setSender} value={sender} />
+              <small>
+                Please provide the amount of money you are requesting
+              </small>
               <input
                 type="text"
                 onChange={e => setAmount(parseInt(e.target.value) || 0)}
                 value={amount}
               />
-              <label className="small">
-                select the account you want to pay from
-              </label>
               {profile.accounts.length ? (
                 <select
-                  onChange={e => setAccount_id(e.target.value)}
-                  value={account_id}
+                  onChange={e => setAccount(e.target.value)}
+                  value={account}
                 >
                   <option value="">none</option>
                   {profile.accounts.map(acc => (
@@ -77,14 +74,10 @@ export default function BankPayment() {
                   ))}
                 </select>
               ) : (
-                <div>you don't have account </div>
+                <div className="error">You don't have bank account! </div>
               )}
-              <label className="small">
-                By submitting you indicate that you have read and agree to the
-                terms and conditions of the the Banks Customer Agreement
-              </label>
               <button type="submit" onSubmit={handleRequest}>
-                Pay now
+                Request
               </button>
             </form>
           </>

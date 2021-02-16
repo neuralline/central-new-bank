@@ -1,39 +1,40 @@
 import axios from 'axios'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useContext, useEffect, useState } from 'react'
-import Nav from '../components/Nav'
-import { StoreContext } from '../context/auth'
-import bankCSS from '../styles/bank.module.scss'
 import { useRouter } from 'next/router'
-import { server } from '../config/config'
-import Input from '../components/forms/Input'
+import { useContext, useEffect, useState } from 'react'
+import { server } from '../../config/config'
+import { StoreContext } from '../../context/isAuth'
+import bankCSS from '../../styles/bank.module.scss'
 
-export default function Requests() {
-  const { profile } = useContext(StoreContext)
+export default function BankPayment() {
   const router = useRouter()
+  const { id } = router.query
+  const { profile } = useContext(StoreContext)
   const [amount, setAmount] = useState<number>(0)
-  const [account, setAccount] = useState<string>('')
-  const [sender, setSender] = useState<string>('robinhood@banker.com')
+  const [account_id, setAccount_id] = useState<string>('')
   const [error, setError] = useState<string>('')
 
   const handleRequest = async e => {
     e.preventDefault()
     setError('')
+
+    if (!account_id) return setError('please select account')
+    if (amount < 0.1 || amount > 30000)
+      return setError('allowed amount is £0.1 to £30,000')
+
     try {
-      await axios.post(`${server}/payments`, {
+      const res = await axios.patch(`${server}/payments/${id}`, {
         amount,
-        account,
-        sender,
-        receiver: profile.user_id
+        account_id
       })
+      console.log('request res.data', res.data)
       setAmount(0)
-      setAccount('')
-      setSender('')
+      setAccount_id('')
       router.push('/profile')
     } catch (err) {
-      setError(err.response.data.error.message)
-      console.log(err.response.data.error.message)
+      setError('The bank encountered error processing your payment')
+      console.log(err)
     }
   }
 
@@ -42,29 +43,31 @@ export default function Requests() {
     <>
       <Head>
         <title>Accounts - Central New Bank</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <section>
         {profile.email ? (
           <>
-            <h1>Request payment</h1>
-            <h2 className="error">{error}</h2>
+            <h1>{error}</h1>
+            <h2>Pay or we will take it</h2>
 
             <form className={bankCSS.Form} onSubmit={handleRequest}>
-              <small>Please provide payer's email address</small>
-              <Input type="email" setValue={setSender} value={sender} />
-              <small>
-                Please provide the amount of money you are requesting
-              </small>
+              <label className="small">
+                Please select the amount you want to pay
+              </label>
               <input
                 type="text"
                 onChange={e => setAmount(parseInt(e.target.value) || 0)}
                 value={amount}
               />
+              <label className="small">
+                select the account you want to pay from
+              </label>
               {profile.accounts.length ? (
                 <select
-                  onChange={e => setAccount(e.target.value)}
-                  value={account}
+                  onChange={e => setAccount_id(e.target.value)}
+                  value={account_id}
                 >
                   <option value="">none</option>
                   {profile.accounts.map(acc => (
@@ -74,10 +77,14 @@ export default function Requests() {
                   ))}
                 </select>
               ) : (
-                <div className="error">You don't have bank account! </div>
+                <div>you don't have account </div>
               )}
+              <label className="small">
+                By submitting you indicate that you have read and agree to the
+                terms and conditions of the the Banks Customer Agreement
+              </label>
               <button type="submit" onSubmit={handleRequest}>
-                Request
+                Pay now
               </button>
             </form>
           </>
