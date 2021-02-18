@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model bank_accounts {
+  createdAt        DateTime           @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime           @default(now()) @db.Timestamp(6)
+  account_id       String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String             @db.VarChar
+  number           String             @unique @default("") @db.VarChar(12)
+  sort_code        String             @default("") @db.VarChar(8)
+  userUserId       String?            @db.Uuid
+  balance          Decimal            @default(0) @db.Decimal(7, 2)
+  users            users?             @relation(fields: [userUserId], references: [user_id])
+  payment_requests payment_requests[]
+}
+
+model payment_requests {
+  createdAt                                    DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt                                    DateTime       @default(now()) @db.Timestamp(6)
+  payment_id                                   String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  amount                                       Decimal        @default(0) @db.Decimal(7, 2)
+  amount_paid                                  Decimal        @default(0) @db.Decimal(7, 2)
+  active                                       Int            @default(0)
+  account_id                                   String?        @db.Uuid
+  senderUserId                                 String?        @db.Uuid
+  receiverUserId                               String?        @db.Uuid
+  bank_accounts                                bank_accounts? @relation(fields: [account_id], references: [account_id])
+  users_payment_requests_receiverUserIdTousers users?         @relation("payment_requests_receiverUserIdTousers", fields: [receiverUserId], references: [user_id])
+  users_payment_requests_senderUserIdTousers   users?         @relation("payment_requests_senderUserIdTousers", fields: [senderUserId], references: [user_id])
+}
+
+model users {
+  createdAt                                               DateTime           @default(now()) @db.Timestamp(6)
+  updatedAt                                               DateTime           @default(now()) @db.Timestamp(6)
+  user_id                                                 String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name                                                    String             @default("") @db.VarChar(128)
+  email                                                   String             @unique @default("") @db.VarChar(128)
+  password                                                String             @db.VarChar
+  bank_accounts                                           bank_accounts[]
+  payment_requests_payment_requests_receiverUserIdTousers payment_requests[] @relation("payment_requests_receiverUserIdTousers")
+  payment_requests_payment_requests_senderUserIdTousers   payment_requests[] @relation("payment_requests_senderUserIdTousers")
+}
