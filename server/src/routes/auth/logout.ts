@@ -1,5 +1,6 @@
 import cookie from 'cookie'
 import {Request, Response} from 'express'
+import {initialState} from '../../auth/isAuth'
 
 export const logout = (_: Request, res: Response) => {
   res.set(
@@ -13,5 +14,5 @@ export const logout = (_: Request, res: Response) => {
     })
   )
 
-  return res.status(200).json({success: true})
+  return res.status(200).json({...initialState})
 }

@@ -20,12 +20,7 @@ paymentsRoute.get('/', async (req: Request, res: Response) => {
 //CREATE Payment
 paymentsRoute.post('/', async (req: Request, res: Response) => {
   const {amount, account, sender, receiver} = req.body
-  console.log('req', {
-    amount,
-    account,
-    sender,
-    receiver
-  })
+
   try {
     if (amount < 0.5 || 30000 < amount) {
       throw {message: 'please provide valid amount of money', error: true}
@@ -45,7 +40,7 @@ paymentsRoute.post('/', async (req: Request, res: Response) => {
 
     await payment.save()
 
-    return res.status(201).json(payment)
+    return res.status(201).json(user)
   } catch (err) {
     console.log(err)
     return res.status(500).json({error: err})
@@ -56,7 +51,7 @@ paymentsRoute.post('/', async (req: Request, res: Response) => {
 paymentsRoute.patch('/:uuid', async (req: Request, res: Response) => {
   const uuid = req.params.uuid
   const {amount, account_id} = req.body
-  console.log({amount, account_id})
+
   try {
     if (amount < 0.5 || 30000 < amount) {
       throw {message: 'please provide a valid amount of money', error: true}
@@ -68,13 +63,17 @@ paymentsRoute.patch('/:uuid', async (req: Request, res: Response) => {
       throw {message: 'you do not have enough money', error: true}
     }
 
-    const payment = await Payment.findOneOrFail({payment_id: uuid})
+    const payment = await Payment.findOne({payment_id: uuid})
+    if (!payment)
+      return res
+        .status(404)
+        .json({message: 'Please select a valid account', error: true})
     //add payment
     payment.amount_paid = payment.amount_paid + amount
 
     if (payment.amount < payment.amount_paid + amount) {
       //it could be a tip though
-      throw {message: 'you are over paying', error: true}
+      return res.status(401).json({message: 'you are over paying', error: true})
     }
 
     if (payment.amount_paid >= payment.amount) {
@@ -94,7 +93,7 @@ paymentsRoute.patch('/:uuid', async (req: Request, res: Response) => {
     console.log(err)
     return res
       .status(500)
-      .json({message: 'something went wrong', error: true, err})
+      .json({message: err.message || 'something went wrong', error: true})
   }
 })
 

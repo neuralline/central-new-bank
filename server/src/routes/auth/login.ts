@@ -3,8 +3,7 @@ import {isEmpty} from 'class-validator'
 import cookie from 'cookie'
 import {Request, Response} from 'express'
 import jwt from 'jsonwebtoken'
-
-import {User} from '../../entity/User'
+import {initialState, loadUserByEmail} from './../../auth/isAuth'
 
 export const login = async (req: Request, res: Response) => {
   const {email, password} = req.body
@@ -16,10 +15,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json(errors)
     }
 
-    const user = await User.findOne(
-      {email: email},
-      {relations: ['accounts', 'receiver', 'sender']}
-    )
+    const user = await loadUserByEmail(email)
     if (!user) return res.status(404).json({email: 'User not found'})
     const passwordMatches = await bcrypt.compare(password, user.password)
 
@@ -27,7 +23,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({password: 'Password is incorrect'})
     }
 
-    const token = jwt.sign({email}, process.env.JWT_SECRET!)
+    const token = jwt.sign({user_id: user.user_id}, process.env.JWT_SECRET!)
 
     res.set(
       'Set-Cookie',
@@ -39,10 +35,18 @@ export const login = async (req: Request, res: Response) => {
         path: '/'
       })
     )
+    const state = {
+      ...initialState,
+      profile: user,
+      authenticated: true,
+      token: token
+    }
 
-    return res.json(user)
+    return res.json(state)
   } catch (err) {
     console.log(err)
-    return res.status(404).json({error: 'account not found'})
+    return res
+      .status(404)
+      .json({message: 'account not found', error: true, success: false})
   }
 }

@@ -1,3 +1,4 @@
+import {loadUserByUserId, mapErrors} from './../auth/isAuth'
 import {validate} from 'class-validator'
 import {Request, Response, Router} from 'express'
 import {Account} from '../entity/Account'
@@ -7,24 +8,35 @@ const accountsRouter = Router()
 //READ  ALL USERS
 accountsRouter.get('/', async (_: Request, res: Response) => {
   try {
-    const accounts = await Account.find({relations: ['user']})
+    const accounts = await Account.find()
     return res.json(accounts)
   } catch (err) {
-    console.log(err)
+    console.log('accounts error', err)
     return res.status(500).json({error: 'something went wrong', err})
   }
 })
 
-//POST create new user
+//POST add new bank account
 accountsRouter.post('/', async (req: Request, res: Response) => {
-  const {balance, name, number, sort_code, user} = req.body
+  const {balance, name, number, sort_code, user_id} = req.body
   try {
-    const account = Account.create({balance, name, number, sort_code, user})
-    const errors = await validate(account)
-    if (errors.length > 0) throw errors
+    let errors: any = {}
+    const account = new Account({
+      balance,
+      name,
+      number,
+      sort_code,
+      user: user_id
+    })
+    errors = await validate(account)
+
+    if (errors.length > 0) {
+      return res.status(400).json(mapErrors(errors))
+    }
 
     await account.save()
-    return res.status(201).json(account)
+    const user = await loadUserByUserId(user_id)
+    return res.status(201).json(user)
   } catch (err) {
     console.log(err)
     return res.status(500).json({error: err})

@@ -1,13 +1,7 @@
 import {validate} from 'class-validator'
 import {Request, Response} from 'express'
+import {mapErrors} from '../../auth/isAuth'
 import {User} from '../../entity/User'
-
-const mapErrors = (errors: Object[]) => {
-  return errors.reduce((prev: any, err: any) => {
-    prev[err.property] = Object.entries(err.constraints)[0][1]
-    return prev
-  }, {})
-}
 
 export const register = async (req: Request, res: Response) => {
   const {email, name, password} = req.body
@@ -35,6 +29,7 @@ export const register = async (req: Request, res: Response) => {
     await user.save()
 
     // Return the user
+
     return res.status(201).json({message: 'user registered', error: false})
   } catch (err) {
     console.log(err)

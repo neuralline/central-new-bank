@@ -11,18 +11,18 @@ import {User} from './User'
 
 @Entity('payment_requests')
 export class Payment extends MainEntity {
-  constructor(sub: Partial<Payment>) {
+  constructor(payment: Partial<Payment>) {
     super()
-    Object.assign(this, sub)
+    Object.assign(this, payment)
   }
 
   @PrimaryGeneratedColumn('uuid')
   payment_id: string
 
-  @Column({type: 'numeric', precision: 7, scale: 2, default: 0.0})
+  @Column({type: 'numeric', precision: 7, scale: 2, default: 0})
   amount: number
 
-  @Column({type: 'numeric', precision: 7, scale: 2, default: 0.0})
+  @Column({type: 'numeric', precision: 7, scale: 2, default: 0})
   amount_paid: number
 
   @ManyToOne(() => Account, account => account.account_id, {eager: true})
