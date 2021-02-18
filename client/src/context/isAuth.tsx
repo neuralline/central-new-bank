@@ -14,7 +14,10 @@ const initialUser: User = {
 const initialState: State = {
   authenticated: false,
   profile: { ...initialUser },
-  loading: true
+  loading: true,
+  token: '',
+  errors: [],
+  message: ''
 }
 
 const reducer = (state: State, { type, data }: Action) => {
@@ -22,11 +25,16 @@ const reducer = (state: State, { type, data }: Action) => {
     case 'LOGIN':
       return {
         ...state,
-        authenticated: true,
+        ...data
+      }
+    case 'REFRESH':
+      return {
+        ...state,
         profile: data
       }
     case 'LOGOUT':
-      return { ...state, authenticated: false, profile: initialUser }
+      console.log('LOGOUT')
+      return { ...initialState, authenticated: false }
 
     default:
       throw new Error(`unknown action type: ${type}`)
@@ -42,8 +50,8 @@ export const StoreProvider: FC = ({ children }) => {
     axios.defaults.withCredentials = true
     const loadUser = async () => {
       try {
-        const res = await axios.post(`${server}/me`)
-        if (!res.data) throw Error
+        const res = await await axios.post(`${server}/me`)
+        if (!res.data) return
         setProfile({ type: 'LOGIN', data: res.data })
       } catch (err) {
         console.log('provider context', err.response.data)

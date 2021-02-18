@@ -1,10 +1,13 @@
+import Link from 'next/link'
 import React, { FC } from 'react'
 import bankCSS from '../styles/bank.module.scss'
 
 const Acc: FC<{ accounts: Account[] }> = ({ accounts }) => {
   return (
     <section className="section">
-      <h2>accounts</h2>
+      <h2>
+        <Link href="/add">Add account</Link>
+      </h2>
       {accounts.length ? (
         accounts.map(acc => (
           <div key={acc.account_id} className={bankCSS.Card}>

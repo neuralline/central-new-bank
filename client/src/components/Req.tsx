@@ -1,10 +1,13 @@
+import Link from 'next/link'
 import React, { FC } from 'react'
 import bankCSS from '../styles/bank.module.scss'
 
 const Req: FC<{ payments: Payment[] }> = ({ payments }) => {
   return (
     <section>
-      <h2>requests</h2>
+      <h2>
+        <Link href="/request">Add request</Link>
+      </h2>
       {payments.length ? (
         payments.map(pay => (
           <div key={pay.payment_id} className={bankCSS.Card}>
@@ -34,7 +37,7 @@ const Req: FC<{ payments: Payment[] }> = ({ payments }) => {
           </div>
         ))
       ) : (
-        <div className={bankCSS.Card}>No request</div>
+        <div className={bankCSS.Card}>You haven't request a payment</div>
       )}
     </section>
   )

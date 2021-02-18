@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 
 const Input: FC<InputInterface> = ({
   type = 'text',
@@ -7,17 +7,23 @@ const Input: FC<InputInterface> = ({
   setValue,
   className = '',
   required = true,
-  error = ''
+  error = '',
+  max = 200,
+  min = 0,
+  title = ''
 }) => {
   return (
     <>
       <input
         type={type}
         className={className}
-        placeholder={placeholder}
+        placeholder={placeholder || title}
         value={value}
         onChange={e => setValue(e.target.value)}
         required={required}
+        maxLength={max}
+        minLength={min}
+        title={title || placeholder}
       />
       <small className="error">{error}</small>
     </>

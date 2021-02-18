@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
+import Input from '../../components/forms/Input'
 import { server } from '../../config/config'
 import { StoreContext } from '../../context/isAuth'
 import bankCSS from '../../styles/bank.module.scss'
@@ -33,8 +34,8 @@ export default function BankPayment() {
       setAccount_id('')
       router.push('/profile')
     } catch (err) {
-      setError('The bank encountered error processing your payment')
-      console.log(err)
+      console.log(err.response.data || '')
+      setError(err.response.data.message)
     }
   }
 
@@ -49,17 +50,16 @@ export default function BankPayment() {
       <section>
         {profile.email ? (
           <>
-            <h1>{error}</h1>
+            <h1>Pay online</h1>
             <h2>Pay or we will take it</h2>
+            {error && <p className="error">{error}</p>}
 
             <form className={bankCSS.Form} onSubmit={handleRequest}>
-              <label className="small">
-                Please select the amount you want to pay
-              </label>
-              <input
-                type="text"
-                onChange={e => setAmount(parseInt(e.target.value) || 0)}
+              <Input
+                type="number"
+                setValue={setAmount}
                 value={amount}
+                title=" Please select the amount you want to pay"
               />
               <label className="small">
                 select the account you want to pay from
@@ -79,13 +79,13 @@ export default function BankPayment() {
               ) : (
                 <div>you don't have account </div>
               )}
-              <label className="small">
-                By submitting you indicate that you have read and agree to the
-                terms and conditions of the the Banks Customer Agreement
-              </label>
               <button type="submit" onSubmit={handleRequest}>
                 Pay now
               </button>
+              <small>
+                By submitting you indicate that you have read and agree to the
+                terms and conditions of the the Banks Customer Agreement
+              </small>
             </form>
           </>
         ) : (

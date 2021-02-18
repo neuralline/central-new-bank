@@ -14,19 +14,19 @@ const Nav = () => {
         <Link shallow href="/">
           Home
         </Link>
-        <Link shallow href="/accounts">
-          Accounts
-        </Link>
-        <Link shallow href="/users">
-          Users
-        </Link>
         {authenticated ? (
           <>
-            <Link shallow href="/request">
-              Request
-            </Link>
             <Link shallow href="/profile">
               {profile.name}
+            </Link>
+            <Link shallow href="/request">
+              Request payment
+            </Link>
+            <Link shallow href="/add">
+              Add account
+            </Link>
+            <Link shallow href="/logout">
+              Logout
             </Link>
           </>
         ) : (

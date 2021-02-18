@@ -10,7 +10,7 @@ import Input from './forms/Input'
 const LoginForm: FC<{ redirectTo?: string }> = ({
   redirectTo = '/profile'
 }) => {
-  const { profile, setProfile } = useContext(StoreContext)
+  const { profile, setProfile, authenticated } = useContext(StoreContext)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -25,18 +25,19 @@ const LoginForm: FC<{ redirectTo?: string }> = ({
         email,
         password
       })
-      console.log('LOGIN, data:', res)
+      console.log('LOGIN, data:', res.data)
       setProfile({ type: 'LOGIN', data: res.data })
       router.push(redirectTo)
     } catch (err) {
       setError('Bank could not connect to server')
-      setErrors(err.response.data)
       console.log(err.response.data)
+      if (!err.response) return
+      setErrors(err.response.data)
     }
   }
 
   useEffect(() => {
-    if (profile.email) {
+    if (authenticated) {
       router.push(redirectTo || '/profile')
     }
   }, [])
@@ -45,7 +46,7 @@ const LoginForm: FC<{ redirectTo?: string }> = ({
       <i>Hi {profile.name}</i>
       <h1>Please Login</h1>
       {error && <h2>{error}</h2>}
-      <form className={bankCSS.Form} onSubmit={handleSubmit}>
+      <form name="bank-login" className={bankCSS.Form} onSubmit={handleSubmit}>
         <Input
           type="email"
           value={email}

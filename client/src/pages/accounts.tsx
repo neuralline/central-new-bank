@@ -1,20 +1,10 @@
 import axios from 'axios'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Acc from '../components/Acc'
 import { server } from '../config/config'
 
-export default function Accounts() {
-  const [accounts, setAccounts] = useState<Account[]>([])
-  console.log('accounts ---', accounts)
-
-  useEffect(() => {
-    axios
-      .get(`${server}/accounts`)
-      .then(res => setAccounts(res.data))
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }, [])
+const Accounts: FC<{ accounts: Account[] }> = ({ accounts }) => {
   return (
     <>
       <Head>
@@ -28,3 +18,23 @@ export default function Accounts() {
     </>
   )
 }
+
+export const getServerSideProps = async () => {
+  try {
+    const response = await fetch(`${server}/accounts`)
+    const accounts = await response.json()
+    return {
+      props: { accounts, message: '', error: false }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      props: {
+        accounts: [],
+        message: 'could not connect to server',
+        error: true
+      }
+    }
+  }
+}
+export default Accounts

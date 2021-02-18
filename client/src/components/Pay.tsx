@@ -36,7 +36,7 @@ const Pay: FC<{ payments: Payment[] }> = ({ payments }) => {
           </div>
         ))
       ) : (
-        <div className={bankCSS.Card}>No request</div>
+        <div className={bankCSS.Card}>No incoming payment</div>
       )}
     </section>
   )

@@ -1,19 +1,9 @@
-import axios from 'axios'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { FC } from 'react'
 import { server } from '../config/config'
 import bankCss from '../styles/bank.module.scss'
 
-export default function Users() {
-  const [users, setUsers] = useState<User[]>([])
-
-  useEffect(() => {
-    axios
-      .get(`${server}/users`)
-      .then(res => setUsers(res.data))
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }, [])
+const Users: FC<{ users: User[] }> = ({ users }) => {
   return (
     <>
       <Head>
@@ -38,3 +28,18 @@ export default function Users() {
     </>
   )
 }
+export const getServerSideProps = async () => {
+  try {
+    const response = await fetch(`${server}/users`)
+    const users = await response.json()
+    return {
+      props: { users, message: '', error: false }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      props: { users: [], message: 'could not connect to server', error: true }
+    }
+  }
+}
+export default Users

@@ -27,12 +27,13 @@ const Register: FC<{ redirectTo?: string }> = ({ redirectTo = '/profile' }) => {
         name: fullName
       })
       console.log('registered ', res)
-      //setProfile({ type: 'LOGIN', data: res.data })
+      setProfile({ type: 'LOGIN', data: res.data })
       router.push('./login')
     } catch (err) {
+      console.log(err.response)
+      if (!err.response) return
       setError('Bank could not connect to server')
       setErrors(err.response.data)
-      console.log(err.response)
     }
   }
 
@@ -46,7 +47,11 @@ const Register: FC<{ redirectTo?: string }> = ({ redirectTo = '/profile' }) => {
       <Head>
         <title>Register - Central New Bank</title>
       </Head>
-      <form className={bankCSS.Form} onSubmit={handleSubmit}>
+      <form
+        name="bank-register"
+        className={bankCSS.Form}
+        onSubmit={handleSubmit}
+      >
         <i>Hi {profile.name}</i>
         <h1>Please sign up</h1>
         {error && <h2>{error}</h2>}

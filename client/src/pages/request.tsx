@@ -10,18 +10,18 @@ import { server } from '../config/config'
 import Input from '../components/forms/Input'
 
 export default function Requests() {
-  const { profile } = useContext(StoreContext)
+  const { profile, setProfile } = useContext(StoreContext)
   const router = useRouter()
   const [amount, setAmount] = useState<number>(0)
   const [account, setAccount] = useState<string>('')
-  const [sender, setSender] = useState<string>('robinhood@banker.com')
+  const [sender, setSender] = useState<string>('')
   const [error, setError] = useState<string>('')
 
   const handleRequest = async e => {
     e.preventDefault()
     setError('')
     try {
-      await axios.post(`${server}/payments`, {
+      const res = await axios.post(`${server}/payments`, {
         amount,
         account,
         sender,
@@ -30,6 +30,8 @@ export default function Requests() {
       setAmount(0)
       setAccount('')
       setSender('')
+      console.log('type: REFRESH, data:', res.data)
+      // setProfile({ type: 'REFRESH', data: res.data })
       router.push('/profile')
     } catch (err) {
       setError(err.response.data.error.message)
@@ -52,14 +54,22 @@ export default function Requests() {
 
             <form className={bankCSS.Form} onSubmit={handleRequest}>
               <small>Please provide payer's email address</small>
-              <Input type="email" setValue={setSender} value={sender} />
+              <Input
+                type="email"
+                placeholder="Senders email address"
+                setValue={setSender}
+                value={sender}
+              />
               <small>
                 Please provide the amount of money you are requesting
               </small>
-              <input
-                type="text"
-                onChange={e => setAmount(parseInt(e.target.value) || 0)}
-                value={amount}
+              <Input
+                type="number"
+                placeholder="amount of money you are requesting"
+                max={0.0}
+                min={30000.0}
+                setValue={setAmount}
+                value={amount.toString()}
               />
               {profile.accounts.length ? (
                 <select

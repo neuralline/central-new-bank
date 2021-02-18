@@ -30,10 +30,13 @@ interface State {
   authenticated: boolean
   profile: User
   loading: boolean
+  token: string
+  errors: any
+  message: string
 }
 
 interface Action {
-  type: string
+  type: 'LOGIN' | 'LOGOUT' | 'REFRESH'
   data: any
 }
 
@@ -43,13 +46,16 @@ interface ContextInterface extends State {
 }
 
 interface InputInterface {
-  value: string
+  value: T
   className?: string
-  type?: 'email' | 'password' | 'text' | 'username'
+  type?: 'email' | 'password' | 'text' | 'username' | 'number'
   placeholder?: string
   error?: string
   required?: boolean
-  setValue: (str: string) => void
+  max?: number
+  min?: number
+  title?: string
+  setValue: <T extends SetStateAction>(args: T) => void
 }
 
 interface Profile extends User {

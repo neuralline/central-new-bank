@@ -10,6 +10,15 @@
   margin-bottom: $padding;
   max-width: 327px;
   min-height: 208px;
+  button {
+    border-radius: $radius;
+    padding: $padding/4;
+    background-color: rgba($green, $alpha: 0.6);
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: rgba($green, $alpha: 0.8);
+  }
 }
 
 .navLinks {
@@ -17,13 +26,14 @@
   align-items: center;
   justify-content: space-between;
   padding: $padding;
-  max-width: 512px;
+  max-width: 612px;
 }
 .Form {
   display: grid;
   gap: 0.6rem;
   justify-content: start;
   width: 100%;
+
   button,
   input,
   select {
@@ -65,11 +75,15 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
+
   section {
     border: 1px solid $green;
     padding: $padding;
     border-radius: $radius;
     display: grid;
+    align-items: start;
+    align-content: start;
+    justify-content: center;
     gap: 1rem;
   }
   i {

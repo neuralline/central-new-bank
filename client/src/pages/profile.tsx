@@ -9,10 +9,10 @@ import bankCSS from '../styles/bank.module.scss'
 
 export default function Users() {
   const router = useRouter()
-  const { profile } = useContext(StoreContext)
+  const { profile, authenticated } = useContext(StoreContext)
 
   useEffect(() => {
-    if (!profile.email) {
+    if (!authenticated) {
       router.push('/login')
     }
   }, [])
@@ -24,7 +24,7 @@ export default function Users() {
       </Head>
 
       <section>
-        {profile.email ? (
+        {authenticated ? (
           <>
             <div key={profile.user_id} className={bankCSS.Card}>
               <div>accounts: {profile.accounts.length}</div>
